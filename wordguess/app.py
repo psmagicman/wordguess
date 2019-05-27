@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+import random
 
 from wordguess.common.connector import initialize_db, get_word_list
 from wordguess.common.utils import is_letter
@@ -30,23 +31,25 @@ def run():
     initialize_db()
     print('Welcome to Hangman v1.1')
     word_list = get_word_list()
-    game = Game(word_list)
+    game = Game(random.choice(word_list))
     word_length = len(game.word)
+    spaces = ['_' for i in game.word]
+    guess_list = []
     print('Your word has %s characters. %s' % (word_length, '_'*word_length))
-    while game.life > 0 and not game.is_word_finished():
-        letter = prompt_letter(game.guess_list)
-        game.guess_list.append(letter)
-        if game.is_in_word(letter):
-            indicies = game.get_character_indicies(letter)
+    while game.life > 0 and not game.is_word_finished(spaces):
+        character = prompt_letter(guess_list)
+        guess_list.append(character)
+        if game.is_in_word(character):
+            indicies = game.get_character_indicies(character)
             for i in indicies:
-                game.update_space_index(i)
+                spaces[i] = game.word[i]
         else:
             game.decrement_life()
             print('You have %s incorrect guesses remaining.' % game.life)
-        print('Letters guessed: %s' % str(game.guess_list))
-        print('Word: ===== %s =====' % ''.join(game.spaces))
+        print('Letters guessed: %s' % str(guess_list))
+        print('Word: ===== %s =====' % ''.join(spaces))
 
-    if game.life > 0 and game.is_word_finished():
+    if game.life > 0 and game.is_word_finished(spaces):
         win_screen(game.life)
     else:
         print('You made too many incorrect guesses.')
