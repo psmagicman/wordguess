@@ -35,13 +35,13 @@ def win_statement():
 
 def save_score(score, name):
     print '%s, your score is [%s]' % (name, score)
-    score = [name, score]
+    final_score = [name, score]
     if not os.path.exists(score_directory):
         os.makedirs(score_directory)
     filepath = os.path.join(score_directory, score_file)
     with open(filepath, 'a') as f:
         writer = csv.writer(f)
-        writer.writerow(score)
+        writer.writerow(final_score)
 
 def millis_since_epoch(dt):
     epoch = datetime.datetime.utcfromtimestamp(0)
