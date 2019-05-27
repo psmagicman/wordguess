@@ -4,6 +4,7 @@ import os
 import csv
 
 from etc.config import score_directory, score_file
+from wordguess.common.connector import insert_into_scoreboard
 
 class Scoreboard(object):
     """docstring for Scoreboard"""
@@ -20,3 +21,6 @@ class Scoreboard(object):
         with open(filepath, 'a') as f:
             writer = csv.writer(f)
             writer.writerow(final_score)
+
+    def save_to_db(self):
+        insert_into_scoreboard(self.name, self.score)

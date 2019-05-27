@@ -1,18 +1,20 @@
 #! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 import re
+import os
 
+from wordguess.common.connector import initialize_db, get_word_list
 from wordguess.game.game import Game
 from wordguess.game.scoreboard import Scoreboard
-from etc.config import word_list
+from etc.config import word_list, db_file
 
 """main driver for the game to run on command line"""
 alphabet_pattern = re.compile('^[a-zA-Z0-9]+$')
 is_letter = lambda x: bool(alphabet_pattern.match(x))
 
 def init():
-    # if db file doesn't exist, create it
-    pass
+    if not os.path.isfile(db_file):
+        initialize_db()
 
 def prompt_letter(guess_list):
     while True:
@@ -28,11 +30,13 @@ def win_screen(score):
     name = raw_input('Congratulations, you won! Please enter your name: ')
     sb = Scoreboard(name, score)
     print '%s, your score is [%s]' % (sb.name, sb.score)
-    sb.save_to_fs()
+    # sb.save_to_fs()
+    sb.save_to_db()
 
 def run():
     init()
-    print 'Welcome to Hangman v1.0'
+    print 'Welcome to Hangman v1.1'
+    word_list = get_word_list()
     game = Game(word_list)
     word_length = len(game.word)
     print 'Your word has %s characters. %s' % (word_length, '_'*word_length)
