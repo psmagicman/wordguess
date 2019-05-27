@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
 import sqlite3
@@ -6,11 +6,13 @@ import sqlite3
 from etc.config import db_dir, db_file, word_list
 
 def initialize_db():
+    if os.path.exists(db_file):
+        return
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
-    print 'creating words'
+    print('creating words')
     init_words_table(word_list)
-    print 'creating scoreboard'
+    print('creating scoreboard')
     init_scoreboard_table()
 
 def init_words_table(word_list):
@@ -49,7 +51,7 @@ def get_word_list():
         c.execute('SELECT word FROM words')
         rows = c.fetchall()
         for row in rows:
-            # print row
+            # print(row)
             word_list.append(row[0])
         return word_list
     except Exception as e:
@@ -59,7 +61,7 @@ def get_word_list():
 
 def insert_into_scoreboard(name, score):
     conn = sqlite3.connect(db_file)
-    print 'inserting into scoreboard'
+    # print('inserting into scoreboard')
     try:
         c = conn.cursor()
         c.execute('INSERT INTO scores (name, score) VALUES (?, ?)', (name, score))
