@@ -1,0 +1,33 @@
+#!/bin/bash
+
+h_flag=''
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $DIR
+cd ..
+
+print_usage() {
+    printf "                $0 - Hangman game
+
+                Usage: $0 [options] <cmd|server>
+
+                options:
+                -h, --help                  show brief help
+           
+"
+}
+
+while getopts 'f' flag; do
+    case "${flag}" in
+        h|help ) print_usage ;;
+        * ) print_usage 
+            exit 1;;
+    esac
+done
+
+case $1 in
+    cmd ) python -m wordguess ;;
+    server ) FLASK_APP=wordguess/routes.py flask run ;;
+    * ) print_usage
+        exit 1 ;;
+esac
