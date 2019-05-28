@@ -105,3 +105,4 @@ venv.bak/
 
 scoreboard/
 db/
+hangman/node_modules
