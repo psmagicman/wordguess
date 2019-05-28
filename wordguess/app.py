@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import random
 
-from wordguess.common.connector import get_word_list
+from wordguess.common.connector import get_word_list, db_file_exists
 from wordguess.common.utils import is_letter
 from wordguess.common.exceptions import DbError
 import wordguess.game.game as game
@@ -40,6 +40,9 @@ def initialize_game(word_list):
     }
 
 def run():
+    if not db_file_exists():
+        print("No db file found, please set it up and try again.")
+        exit(1)
     print('Welcome to Hangman v1.2')
     word_list = get_word_list()
     data = initialize_game(word_list)

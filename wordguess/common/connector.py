@@ -6,6 +6,10 @@ import sqlite3
 from etc.config import db_file
 from wordguess.common.exceptions import DbError
 
+def db_file_exists():
+    return os.path.exists(db_file)
+
+
 def init_words_table(word_list):
     conn = sqlite3.connect(db_file)
     try:

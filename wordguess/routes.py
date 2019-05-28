@@ -7,9 +7,13 @@ from flask import Flask, jsonify, request, make_response
 
 import wordguess.game.game as game
 import wordguess.game.scoreboard as scoreboard
-from wordguess.common.connector import get_word_list
+from wordguess.common.connector import get_word_list, db_file_exists
 import wordguess.common.utils as utils
 from wordguess.common.exceptions import TokenError, DbError
+
+if not db_file_exists():
+    print("No db file found, please set it up and try again.")
+    exit(1)
 
 app = Flask(__name__)
 
