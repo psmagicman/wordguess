@@ -4,6 +4,7 @@ import random
 import time
 
 from flask import Flask, jsonify, request, make_response
+from flask_cors import CORS
 
 import wordguess.game.game as game
 import wordguess.game.scoreboard as scoreboard
@@ -16,6 +17,7 @@ if not db_file_exists():
     exit(1)
 
 app = Flask(__name__)
+cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
 def message_to_dict(message):
     # format is word|life|spaces|secs|guesses
@@ -54,6 +56,10 @@ def game_won(gs):
     return make_response(jsonify(res), 200)
 
 @app.route('/')
+def home():
+    return make_response('hello world', 200)
+
+@app.route('/api/v1/start')
 def start_game():
     word_list = get_word_list()
     word = random.choice(word_list)
@@ -80,10 +86,17 @@ def check_letter():
     except TokenError as e:
         res['alert'] = e.message
         return make_response(jsonify(res), 400)
+    except KeyError as e:
+        res['alert'] = 'No token found.'
+        return make_response(jsonify(res), 400)
     # game state
     gs = message_to_dict(decoded_message)
     if 'char' not in req or 'token' not in req:
         res['alert'] = 'No <char> or <token> in request body.'
+        return make_response(jsonify(res), 400)
+    if req['token'] == '':
+        res['alert'] = 'Please enter a single alphanumeric character.'
+        res = add_to_response(res, gs)
         return make_response(jsonify(res), 400)
     if len(req['char']) != 1:
         res['alert'] = 'Please enter a single alphanumeric character.'
