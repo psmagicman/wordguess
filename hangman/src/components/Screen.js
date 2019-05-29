@@ -11,7 +11,7 @@ export default function Screen(props) {
     return spaceSequence.split('').join(' ');
   }
 
-  const life = props.data.life ? props.data.life : 5;
+  const life = props.data.life >= 0 ? props.data.life : 0;
   const spaces = props.data.spaces ? separateSpaces(props.data.spaces) : '';
   const guesses = props.data.guesses ? delimitGuesses(props.data.guesses) : '';
 

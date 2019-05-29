@@ -10,6 +10,8 @@ const GetFetch = (url, initialState) => {
       'guesses': inputData.hasOwnProperty('guesses') ? inputData.guesses : data.guesses,
       'alert': inputData.hasOwnProperty('alert') ? inputData.alert : data.alert,
       'token': inputData.hasOwnProperty('token') ? inputData.token : data.token,
+      'status': inputData.hasOwnProperty('status') ? inputData.status : data.status,
+      'stoken': inputData.hasOwnProperty('stoken') ? inputData.stoken : data.stoken,
     };
     setData(newData);
   }
@@ -29,14 +31,14 @@ const GetFetch = (url, initialState) => {
 
 const PostFetch = (url, callback) => {
     
-    async function fetchUrl(c, t) {
+    async function fetchUrl(payload) {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({'char': c, 'token': t}),
+        body: JSON.stringify(payload),
       });
       const json = await response.json();
       callback(json);
