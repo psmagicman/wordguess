@@ -3,9 +3,10 @@ Hangman Game
 Just a simple hangman game
 
 python version 3.7.3
+
 sqlite3 version 3.24.0 2018-06-04 14:10:15 95fbac39baaab1c3a84fdfc82ccb7f42398b2e92f18a2a57bce1d4a713cbaapl
 
-##Installation
+## Installation
 
 Running the following commands in the order presented will setup the environment
 
@@ -20,7 +21,7 @@ Please run the `install_db.py` script to initialize the database. Both the serve
 
 To install the frontend, please run the `install_frontend.sh` script. 
 
-##Playing
+## Playing
 
 To play in the command line, please execute `./start cmd` in the `bin` directory.
 
