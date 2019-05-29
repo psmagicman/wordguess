@@ -54,7 +54,7 @@ export default function Score(props) {
   }
 
   const saveScore = () => {
-    if (name || stoken) {
+    if (name.length > 0 && stoken.length > 0) {
       sendScore({'name': name, 'stoken': stoken});
       setName('');
       props.handleClose();
