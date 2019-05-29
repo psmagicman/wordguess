@@ -33,7 +33,7 @@ export default function Score(props) {
 
   const classes = useStyles();
 
-  const sendScore = PostFetch('http://localhost:5000/api/v1/score', props.update);
+  const sendScore = PostFetch('/api/v1/score', props.update);
 
   const handleOpenSnackBar = () => {
     setSnackOpen(true);

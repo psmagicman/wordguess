@@ -63,7 +63,7 @@ export default function App() {
     'stoken': '',
   }
 
-  let [data, updateData, fetchStart] = GetFetch('http://localhost:5000/api/v1/start', initialState);
+  let [data, updateData, fetchStart] = GetFetch('/api/v1/start', initialState);
 
   const restartGame = () => {
     updateData(initialState);
@@ -88,8 +88,6 @@ export default function App() {
       }, 2000);
     }
   }, [data.status])
-
-  console.log(data);
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
