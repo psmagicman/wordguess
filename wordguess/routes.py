@@ -11,6 +11,7 @@ import wordguess.game.scoreboard as scoreboard
 from wordguess.common.connector import get_word_list, db_file_exists
 import wordguess.common.utils as utils
 from wordguess.common.exceptions import TokenError, DbError
+import wordguess.common.messages as alerts
 
 if not db_file_exists():
     print("No db file found, please set it up and try again.")
@@ -19,23 +20,33 @@ if not db_file_exists():
 app = Flask(__name__)
 cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
+game_status = {
+    'start': 0,
+    'progress': 1,
+    'lose': 2,
+    'win': 3,
+}
+
 def message_to_dict(message):
-    # format is word|life|spaces|secs|guesses
+    # format is word|life|spaces|secs|status|guesses
     m = message.split(utils.DELIM)
     return {
         'word': m[0],
         'life': int(m[1]),
         'spaces': [i for i in m[2]],
         'start_time': float(m[3]),
-        'guesses': [i for i in m[4]]
+        'status': int(m[4]),
+        'guesses': [i for i in m[5]]
     }
 
 def tokenize_message(gs):
     life = str(gs['life'])
     spaces = ''.join(gs['spaces'])
     guesses = ''.join(gs['guesses'])
-    st = str(gs['start_time'])
-    message = utils.create_message(gs['word'], life, spaces, st, guesses)
+    start = str(gs['start_time'])
+    status = str(gs['status'])
+    message = utils.create_message(gs['word'], life, 
+            spaces, start, status, guesses)
     return utils.encode_message(message).decode('utf-8')
 
 def add_to_response(res, gs):
@@ -45,13 +56,15 @@ def add_to_response(res, gs):
     return res
 
 def game_lost():
-    res = {'alert': 'You made too many incorrect guesses. Game over.'}
+    res = {'alert': alerts.LOSE_MESSAGE, 
+           'status': game_status['lose']}
     return make_response(jsonify(res), 200)
 
 def game_won(gs):
-    res = {'alert': 'Congratulations, you won!'}
+    res = {'alert': alerts.WIN_MESSAGE + ' [SCORE: %s]' % gs['life'], 
+           'status': game_status['win']}
     message = utils.create_message(gs['life'], time.time())
-    res['token'] = utils.encode_message(message).decode('utf-8')
+    res['stoken'] = utils.encode_message(message).decode('utf-8')
     res = add_to_response(res, gs)
     return make_response(jsonify(res), 200)
 
@@ -66,20 +79,24 @@ def start_game():
     life = 5
     spaces = ''.join(['_' for i in word])
     guesses = ''.join([])
+    status = game_status['start']
     # start time included in message so tokens aren't the same for each word
-    message = utils.create_message(word, life, spaces, time.time(), guesses)
+    message = utils.create_message(word, life, spaces, 
+            time.time(), status, guesses)
     response = {
         'spaces': spaces,
         'life': life,
         'guesses': guesses,
-        'token': utils.encode_message(message).decode('utf-8')
+        'token': utils.encode_message(message).decode('utf-8'),
+        'status': status,
+        'alert': '',
     }
     return make_response(jsonify(response), 200)
 
 @app.route('/api/v1/word', methods=['POST'])
 def check_letter():
     req = request.get_json(force=True)
-    res = {}
+    res = {'status': game_status['progress']}
     decoded_message = None
     try:
         decoded_message = utils.decode_token(req['token'])
@@ -87,25 +104,25 @@ def check_letter():
         res['alert'] = e.message
         return make_response(jsonify(res), 400)
     except KeyError as e:
-        res['alert'] = 'No token found.'
+        res['alert'] = alerts.NO_TOKEN
         return make_response(jsonify(res), 400)
     # game state
     gs = message_to_dict(decoded_message)
     if 'char' not in req or 'token' not in req:
-        res['alert'] = 'No <char> or <token> in request body.'
+        res['alert'] = alerts.MISSING_CHAR_TOKEN
         return make_response(jsonify(res), 400)
     if req['token'] == '':
-        res['alert'] = 'Please enter a single alphanumeric character.'
+        res['alert'] = alerts.ALPHANUMERIC_ONLY
         res = add_to_response(res, gs)
         return make_response(jsonify(res), 400)
     if len(req['char']) != 1:
-        res['alert'] = 'Please enter a single alphanumeric character.'
+        res['alert'] = alerts.ALPHANUMERIC_ONLY
         res['token'] = req['token']
         res = add_to_response(res, gs)
         return make_response(jsonify(res), 400)
     if utils.is_letter(req['char']):
         if req['char'] in gs['guesses']:
-            res['alert'] = ('You already entered this letter, please try again.')
+            res['alert'] = alerts.DUPLICATE_CHAR
             res['token'] = req['token']
             res = add_to_response(res, gs)
             return make_response(jsonify(res), 200)
@@ -118,13 +135,11 @@ def check_letter():
             if gs['life'] <= 0:
                 game_lost()
             gs['life'] -= 1
-            res['alert'] = ('You have %s incorrect guesses remaining.' 
-                    % gs['life'])
+            res['alert'] = alerts.INCORRECT
             gs['guesses'].append(req['char'])
         res['token'] = tokenize_message(gs)
     else:
-        res['alert'] = ('You have entered invalid char <%s>, please try again.' 
-                % req['char'])
+        res['alert'] = alerts.ALPHANUMERIC_ONLY
     if gs['life'] < 0:
         return game_lost()
     spaces_word = ''.join(gs['spaces'])
@@ -137,11 +152,11 @@ def check_letter():
 def score():
     req = request.get_json(force=True)
     res = {}
-    if 'name' not in req or 'token' not in req:
-        res['alert'] = 'No <name> or <token> in request body.'
+    if 'name' not in req or 'stoken' not in req:
+        res['alert'] = alerts.MISSING_NAME_TOKEN
         return make_response(jsonify(res), 400)
     try:
-        decoded_message = utils.decode_token(req['token'])
+        decoded_message = utils.decode_token(req['stoken'])
         m = decoded_message.split(utils.DELIM)
         res['score'] = int(m[0])
     except TokenError as e:
