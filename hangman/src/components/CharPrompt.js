@@ -1,50 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { PostFetch } from '../hooks';
 
 export default function CharPrompt(props) {
   const [char, setChar] = useState('');
-  const [token, setToken] = useState('');
   
-  useEffect(() => {
-    setToken(props.data.token);  
-  }, [props.data.token]);
-  
-  const [res, caller] = PostFetch('http://localhost:5000/api/v1/word', char, token)
+  let token = props.data.token ? props.data.token : '';
 
-  const callerHandler = (char, token) => {
-    caller(char, token)
+  const sendChar = PostFetch('http://localhost:5000/api/v1/word', props.update)
+
+  const restart = function() {
+    props.restart();
+    setChar('');
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          name="charField"
-          variant="outlined"
-          required
-          fullWidth
-          id="charField"
-          label="Character Field"
-          autoFocus
-          onChange={(e) => setChar(e.target.value)}
-        />
+    <div>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            name="charField"
+            variant="outlined"
+            required
+            fullWidth
+            id="charField"
+            label="Character Field"
+            autoFocus
+            value={char}
+            onChange={(e) => setChar(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={() => { sendChar(char, token) }}
+          >
+            Submit
+          </Button>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          type="button"
-          fullWidth
-          variant="contained"
-          color="primary"
-          onClick={() => { callerHandler(char, token) }}
-        >
-          Submit
-        </Button>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Button
+            type="button"
+            fullWidth
+            size="large"
+            variant="contained"
+            color="secondary"
+            onClick={() => { restart() }}
+          >
+            Restart
+          </Button>
+        </Grid>
       </Grid>
-    </Grid>
+    </div>
   );
 }

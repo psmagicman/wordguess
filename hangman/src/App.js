@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -6,11 +6,9 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 
 import './App.css';
-import { GetFetch, PostFetch } from './hooks';
+import { GetFetch } from './hooks';
 import Message from './components/Message';
 import CharPrompt from './components/CharPrompt';
 import Screen from './components/Screen';
@@ -50,8 +48,20 @@ export default function App() {
   const classes = useStyles();
   const messagePaper = clsx(classes.paper, classes.messageHeight);
   const lettersPaper = clsx(classes.paper, classes.lettersHeight);
+  const initialState = {
+    'life': 5,
+    'spaces': '',
+    'guesses': '',
+    'alert': '',
+    'token': '',
+  }
 
-  const [data, setData] = GetFetch('http://localhost:5000/api/v1/start');
+  let [data, updateData, fetchStart] = GetFetch('http://localhost:5000/api/v1/start', initialState);
+
+  const restartGame = () => {
+    updateData(initialState);
+    fetchStart();
+  }
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
@@ -72,7 +82,7 @@ export default function App() {
             </Paper>
           </Grid>
           <Grid item xs={12}>
-            <CharPrompt data={data}/>
+            <CharPrompt data={data} update={updateData} restart={restartGame}/>
           </Grid>
         </Grid>
       </div>

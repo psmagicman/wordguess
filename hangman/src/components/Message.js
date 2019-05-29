@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 
 export default function Message(props) {
-  const [alert, setAlert] = useState('...')
-
-  if (props.message) {
-    setAlert(props.message)
-  }
+  
+  const alert = props.message ? props.message : '...';
 
   return (
     <Typography 
         component="p" 
-        variant="h2" 
+        variant="h6" 
         color="textPrimary" 
         align="center" 
         gutterBottom>
