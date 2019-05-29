@@ -13,9 +13,12 @@ Running the following commands in the order presented will setup the environment
 virtualenv --python=python3 ENV
 source ENV/bin/activate
 pip install -r requirements.txt
+python install_db.py
 ```
 
-Please run the `setup.py` script to initialize the database. Both the server and command line game will immediately exit otherwise.
+Please run the `install_db.py` script to initialize the database. Both the server and command line game will immediately exit otherwise.
+
+To install the frontend, please run the `install_frontend.sh` script. 
 
 ##Playing
 
@@ -25,5 +28,5 @@ To start the server, please execute `./start server` in the `bin` directory.
 
 The cmd version of the game uses the same database as the UI version of the game though it does not require the server to be running to play.
 
-To play on the browser
+To play on the browser please start the server and navigate to the root path (ie. `http://localhost:5000/`).
 
