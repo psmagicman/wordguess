@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 import random
 
-from wordguess.common.connector import get_word_list, db_file_exists
-from wordguess.common.utils import is_letter
-from wordguess.common.exceptions import DbError
-import wordguess.game.game as game
-import wordguess.game.scoreboard as scoreboard
+from hangman.common.connector import get_word_list, db_file_exists
+from hangman.common.utils import is_letter
+from hangman.common.exceptions import DbError
+import hangman.game.game as game
+import hangman.game.scoreboard as scoreboard
 from etc.config import word_list, db_file
 
 """main driver for the game to run on command line"""

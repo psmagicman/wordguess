@@ -6,12 +6,12 @@ import time
 from flask import Flask, jsonify, request, make_response, render_template
 from flask_cors import CORS
 
-import wordguess.game.game as game
-import wordguess.game.scoreboard as scoreboard
-from wordguess.common.connector import get_word_list, db_file_exists
-import wordguess.common.utils as utils
-from wordguess.common.exceptions import TokenError, DbError
-import wordguess.common.messages as alerts
+import hangman.game.game as game
+import hangman.game.scoreboard as scoreboard
+from hangman.common.connector import get_word_list, db_file_exists
+import hangman.common.utils as utils
+from hangman.common.exceptions import TokenError, DbError
+import hangman.common.messages as alerts
 
 if not db_file_exists():
     print("No db file found, please set it up and try again.")

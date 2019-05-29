@@ -4,8 +4,8 @@ import os
 import csv
 
 from etc.config import score_directory, score_file
-from wordguess.common.connector import insert_into_scoreboard
-from wordguess.common.exceptions import DbError
+from hangman.common.connector import insert_into_scoreboard
+from hangman.common.exceptions import DbError
 
 def save_to_fs(name, score):
     final_score = [name, score]

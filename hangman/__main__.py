@@ -1,4 +1,4 @@
-from wordguess import app
+from hangman import app
 
 if __name__ == '__main__':
     app.run()

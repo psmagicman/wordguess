@@ -26,8 +26,8 @@ while getopts 'f' flag; do
 done
 
 case $1 in
-    cmd ) python -m wordguess ;;
-    server ) FLASK_APP=wordguess/routes.py flask run ;;
+    cmd ) python -m hangman ;;
+    server ) FLASK_APP=hangman/routes.py flask run ;;
     * ) print_usage
         exit 1 ;;
 esac

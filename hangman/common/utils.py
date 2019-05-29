@@ -6,7 +6,7 @@ import base64
 from cryptography.fernet import Fernet, InvalidToken
 
 from etc.config import game_key
-from wordguess.common.exceptions import TokenError
+from hangman.common.exceptions import TokenError
 
 alphabet_pattern = re.compile('^[a-zA-Z0-9]+$')
 DELIM = '|'

@@ -3,7 +3,7 @@
 import os
 
 from etc.config import db_dir, db_file, word_list
-from wordguess.common.connector import init_words_table, init_scoreboard_table
+from hangman.common.connector import init_words_table, init_scoreboard_table
 
 def initialize_db():
     if os.path.exists(db_file):
