@@ -3,7 +3,7 @@
 import random
 import time
 
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, render_template
 from flask_cors import CORS
 
 import wordguess.game.game as game
@@ -71,7 +71,7 @@ def game_won(gs):
 
 @app.route('/')
 def home():
-    return make_response('hello world', 200)
+    return render_template('index.html')
 
 @app.route('/api/v1/start')
 def start_game():
