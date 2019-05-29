@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Dialog from '@material-ui/core/Dialog';
 
 import './App.css';
 import { GetFetch } from './hooks';
@@ -63,7 +62,8 @@ export default function App() {
     'stoken': '',
   }
 
-  let [data, updateData, fetchStart] = GetFetch('/api/v1/start', initialState);
+  let [data, updateData, fetchStart] = GetFetch(process.env.REACT_APP_URL 
+                                          + '/api/v1/start', initialState);
 
   const restartGame = () => {
     updateData(initialState);
@@ -118,12 +118,11 @@ export default function App() {
               status={data.status} />
           </Grid>
         </Grid>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-        >
-          <Score handleClose={handleClose} data={data} update={updateData} />
-        </Dialog>
+          <Score 
+            handleClose={handleClose} 
+            data={data} 
+            update={updateData}
+            open={open} />
       </div>
     </Container>
 

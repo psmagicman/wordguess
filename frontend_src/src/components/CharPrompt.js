@@ -12,7 +12,8 @@ export default function CharPrompt(props) {
   
   let token = props.data.hasOwnProperty('token') ? props.data.token : '';
 
-  const sendChar = PostFetch('/api/v1/word', props.update)
+  const sendChar = PostFetch(process.env.REACT_APP_URL
+                       + '/api/v1/word', props.update)
   const onEnter = (e) => {
     // Return key
     if (e.keyCode === 13) {
