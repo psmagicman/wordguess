@@ -89,6 +89,8 @@ export default function App() {
     }
   }, [data.status])
 
+  console.log(data);
+
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
       <CssBaseline />

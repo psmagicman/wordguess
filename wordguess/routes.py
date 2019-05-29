@@ -55,9 +55,10 @@ def add_to_response(res, gs):
     res['guesses'] = ''.join(gs['guesses'])
     return res
 
-def game_lost():
+def game_lost(gs):
     res = {'alert': alerts.LOSE_MESSAGE, 
            'status': game_status['lose']}
+    res = add_to_response(res, gs)
     return make_response(jsonify(res), 200)
 
 def game_won(gs):
@@ -120,6 +121,7 @@ def check_letter():
         res['token'] = req['token']
         res = add_to_response(res, gs)
         return make_response(jsonify(res), 400)
+
     if utils.is_letter(req['char']):
         if req['char'] in gs['guesses']:
             res['alert'] = alerts.DUPLICATE_CHAR
@@ -132,16 +134,17 @@ def check_letter():
                 gs['spaces'][i] = gs['word'][i]
             gs['guesses'].append(req['char'])
         else:
-            if gs['life'] <= 0:
-                game_lost()
+            if gs['life'] < 1:
+                game_lost(gs)
             gs['life'] -= 1
             res['alert'] = alerts.INCORRECT
             gs['guesses'].append(req['char'])
         res['token'] = tokenize_message(gs)
     else:
         res['alert'] = alerts.ALPHANUMERIC_ONLY
-    if gs['life'] < 0:
-        return game_lost()
+
+    if gs['life'] < 1:
+        return game_lost(gs)
     spaces_word = ''.join(gs['spaces'])
     if spaces_word == gs['word']:
         return game_won(gs)
