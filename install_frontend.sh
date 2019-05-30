@@ -3,8 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 echo "#### CLEANING UP ####"
-rm -rf wordguess/static/*
-rm wordguess/templates/index.html
+rm -rf hangman/static/*
+rm hangman/templates/index.html
 cd frontend_src
 
 echo "#### BUILDING FRONTEND ####"
@@ -13,8 +13,8 @@ npm run build
 
 echo "#### MOVING FILES ####"
 cd ..
-mv frontend_src/build/index.html wordguess/templates/index.html
-mv frontend_src/build/static/* wordguess/static/
-mv frontend_src/build/* wordguess/static/
+mv frontend_src/build/index.html hangman/templates/index.html
+mv frontend_src/build/static/* hangman/static/
+mv frontend_src/build/* hangman/static/
 
 echo "#### DONE ####"
